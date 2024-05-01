@@ -1,0 +1,695 @@
+<!-- Zh -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abyssinica+SIL">
+    <link rel="stylesheet" href="../../assets/styles/stu-attendence-style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Student Page</title>
+
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header__wrapper"> 
+                <a class="logo" href="./home-page.html"></a> 
+            <!-- </div> -->
+                <div class="admin">
+                    <div class="admin-details">
+                        <div class="admin-info">
+                            <p>NAME SURNAME:</p> 
+                            <p id="name">PALENSHEEVA PALENSHE</p>
+                        </div>
+                        <div class="admin-info">
+                            <p>LAST LOGIN DATE:</p> 
+                            <p id="login-date">08 FEB 2024</p>
+                        </div>
+                        <div class="admin-info">
+                            <p>STATUS:</p> 
+                            <p id="statusName">STUDENT</p>
+                        </div>
+                    </div>
+                    <div class="icon" style="background-image: url(../../assets/images/icon.png);">
+                    </div>
+                <!-- </div> -->
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="container">
+            <div class="main__wrapper">
+                <div class="sidebar__wrapper">
+                    <nav class="menu">
+                        <a href="./home-page.html">HOME PAGE</a>
+                        <a href="./schedule-page.html">Course schedule</a>
+                        <a href="./attendence-page.html"id="selected">ATTENDANCE</a>
+                        <a href="./absences-page.html">ABSENCES</a>
+                        <a href="./profile-page.html">my profile</a>
+                        <form action="" class="logout">
+                            <button>Log out</button>
+                        </form>
+                    </nav>
+                </div>
+                <div class="main__content">
+                    <div class="title-name">
+                        <h1 style="color: #DFBC5F; margin-top: -20px; margin-bottom: 10px">ATTENDANCE</h1>
+                    </div>
+                    <div>
+                        <h4 class="BreadcrumbAttSet">
+                            <span class="page-name" id="attendanceLink" style="color: white; font-size:small; font-weight: 300;margin-bottom: 20px">Attendance List</span>
+                            <span id="BreadcrumbAttSet" class="underlineAtt" style="font-weight: 300; font-size: small"></span>
+                            <span id="courseCode" style="font-weight: 300; font-size: small"></span>
+                            <span class="page-message"><h4></h4></span>
+                        </h4>
+                    </div>
+                    <div>
+                    <div class="table-container"></div>
+                    <p class="click-course-name" id="pclass"> * Click <span style="color: #f7d36f; font-family: 'Courier New', Courier, monospace;">course name</span> for viewing attendance list.</p>
+                    <p class="click-course-code" id="pclass1"> * Click <span style="color: #f7d36f; font-family: 'Courier New', Courier, monospace;">course code</span> for setting attendance code.</p>
+                    </div>
+                    <div class="att-set" style="display: none;">
+
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div class="personal-info">
+                                <!-- <p>Teacher Name : </p> -->
+                                <p id="teacherName" class="teacherN"></p>
+                            </div>
+
+                            <div class="personal-info">
+                                <!-- <p>Course Description:</p> -->
+                                <p id="courseDesc" class="courseN"></p>
+                            </div>
+
+                            <div class="personal-info">
+                                <!-- <p>Start Date:</p> -->
+                                <p id="startDate" class="startD"></p>
+                            </div>
+
+                            <div class="personal-info">
+                                <!-- <p>Section Name:</p> -->
+                                <p id="sectionName" class="sectionN"></p>
+                            </div>
+                            <form action="#" style="display: flex; flex-direction: column; ">
+                                <label for="code" style="color: white; margin-bottom: 10px; margin-top: -43px; margin-left: 150px;">
+                                    Enter the code for attendance:
+                                </label>
+                                <input type="text" placeholder="Enter attendance code" class="code-att"  name="code" id="code">
+                                
+                            </form>
+                            <div>
+                                <button id="Enterbtn" class="action-btn">Enter</button>
+                                <button id="Leavebtn" class="action-btn">Leave</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </main>
+    <!-- <script src="../../assets/scripts/stud.js"></script> -->
+    <div id="attendanceModal" class="modal">
+        <div class="modal-content">
+            <!-- <span class="close">&times;</span> -->
+            <div id="attendanceData">
+
+
+            </div>
+            <div> 
+                <p id="not" style="color: aliceblue; margin-left: 480px; margin-top: 60px; font-family:Georgia, 'Times New Roman', Times, serif;"> * CLICK THE COURSE NAME FOR VIEWING YOUR ATTENDANCE LIST</p> 
+            </div>
+        </div>
+    </div>
+
+    <div id="attendanceModal" class="modal">
+        <div class="modal-content">
+            <!-- Сюда будет добавлено содержимое модального окна -->
+        </div>
+    </div>
+
+    <div id="startModal" class="modal"> 
+        <div class="modal-content"> 
+           <!-- <span class="close">&times;</span>  -->
+              <p class="question">Do you want to start the <span style="color: rgb(155, 118, 49);" id="modalStartCourseSectionName"></span> Course?</p> 
+           <button id="confirmStart" style="margin-left: 260px;" class="modal-btn">Yes</button> 
+           <button id="cancelStart" style="margin-left: 20px;" class="modal-btn">No</button> 
+        </div> 
+    </div>
+
+
+    <div id="logModal" class="modal"> 
+        <div class="modal-content"> 
+        <!-- <span class="close">&times;</span>  -->
+        <p class="question">Do you want to leave from <span style="color: rgb(155, 118, 49);" id="modalEndCourseSectionName"></span> Course?</p> 
+        <button id="confirmLog" style="margin-left: 260px;" class="modal-btn">Yes</button> 
+        <button id="cancelSLog" style="margin-left: 20px;" class="modal-btn">No</button> 
+        </div> 
+    </div>
+
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ожидаем нажатия на текст "ATTENDANCE"
+        document.getElementById('attendanceLink').addEventListener('click', function() {
+            // Перенаправляем пользователя на страницу посещаемости
+            window.location.href = './attendence-page.html';
+        });
+
+        // Отключаем обработчики событий для courseName и courseCode
+        disableEventListenersForCourseNames();
+        disableEventListenersForCourseCodes();
+    });
+
+    // Функция для отключения обработчиков событий для courseName
+    function disableEventListenersForCourseNames() {
+        document.querySelectorAll('.course-name').forEach(courseName => {
+            courseName.style.pointerEvents = 'none'; // Disable pointer events
+            courseName.style.cursor = 'default'; // Change cursor to default
+        });
+    }
+
+    // Функция для отключения обработчиков событий для courseCode
+    function disableEventListenersForCourseCodes() {
+        document.querySelectorAll('.course-code').forEach(courseCode => {
+            courseCode.style.pointerEvents = 'none'; // Disable pointer events
+            courseCode.style.cursor = 'default'; // Change cursor to default
+        });
+    }
+
+</script>
+<script>
+    // Обработчик события для кнопки "Log out"
+    document.querySelector('.logout button').addEventListener('click', function(event) {
+        event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+        localStorage.removeItem('token'); // Удаляем токен из локального хранилища
+        window.location.href = '../../login.html'; // Перенаправляем пользователя на страницу входа
+    });
+</script>
+<script>
+    (async function () {
+        try {
+            const response = await fetch('http://localhost:8081/api/person/v1/current', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
+                    'Content-Type': 'application/json',
+                },
+            });
+            
+            if (response.ok) {
+                const userData = await response.json();
+                document.getElementById('name').textContent = `${userData.lastname || ''} ${userData.firstname || ''}`;
+                document.getElementById('login-date').textContent = userData.lastLogin || '';
+                document.getElementById('speName').textContent = userData.courseCode || '';
+
+            } else {
+                console.error('Failed to fetch user details:', response.statusText);
+            }
+        } catch (error) {
+            //console.error('Error during fetch operation:', error);
+        }
+    })();
+</script>
+
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch attendance data when the page loads
+            fetchAttendanceData();
+        });
+        
+        // Function to fetch attendance data from the API
+        function fetchAttendanceData() {
+            const apiUrl = 'http://localhost:8081/api/student/attStatus';
+            const token = localStorage.getItem('token');
+        
+            fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayAttendanceData(data);
+                    // Add event listener to course names after data is loaded
+                    addEventListenerToCourseNames();
+                    addEventListenerToCourseCodes();
+                    
+                })
+                .catch(error => {
+                    console.error('Error fetching attendance data:', error);
+                    document.querySelector('.table-container').innerHTML = '<p>Error loading attendance data.</p>';
+                });
+        }
+        
+        // Function to display attendance data in the table
+        function displayAttendanceData(data) {
+            const container = document.querySelector('.table-container');
+            let table = '<table>';
+                table += `<tr>
+                            <th>№</th>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Hours</th>
+                            <th><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                            </svg></th>
+                            <th><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                            </svg></th>
+                            <th><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#71A4E1" class="bi bi-p-circle-fill" viewBox="0 0 16 16">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.5 4.002V12h1.283V9.164h1.668C10.033 9.164 11 8.08 11 6.586c0-1.482-.955-2.584-2.538-2.584zm2.77 4.072c.893 0 1.419-.545 1.419-1.488s-.526-1.482-1.42-1.482H6.778v2.97z"/>
+                            </svg></th>
+                            <th>Absence Limit</th>
+                        </tr>`; 
+
+            var cnt = 1;
+            for (const key in data) {
+                const course = data[key];
+                // Check if absenceLimit is greater than 10
+                let progressClass = course.absenceLimit > 5 ? 'progress-high' : '';
+                
+                table += `<tr>
+                            <td>${cnt++}</td>
+                            <td class="course-code" data-sections1="${course.code}">${course.code}</td>
+                            <td class="course-name" data-sections="${course.sectionNames}">${course.courseName}</td>
+                            <td>${course.hours}</td>
+                            <td>${course.presentHours}</td>
+                            <td>${course.absentHours}</td>
+                            <td>${course.reasonHours}</td>
+                            <td class="absence">
+                                <progress class="${progressClass}" value="${course.absenceLimit}" max="30"></progress> 
+                                ${course.absenceLimit}%
+                            </td>
+                        </tr>`;
+            }
+        
+            table += '</table>';
+            container.innerHTML = table;
+        }
+        
+        // Function to add event listener to course names
+        function addEventListenerToCourseNames() {
+            document.querySelectorAll('.course-name').forEach(courseName => {
+                courseName.addEventListener('click', function() {
+                    const courseText = this.textContent.trim();
+                    const sections = this.getAttribute('data-sections');
+                    const token = localStorage.getItem('token');
+                    const apiUrl = `http://localhost:8081/api/student/attStatus/bySection/` + sections;
+        
+                    // Обновление текста "хлебной крошки"
+                    //document.getElementById('BreadcrumbAttSet').textContent = ` - ${courseText}`;
+                    document.getElementById('BreadcrumbAttSet').textContent = ` ➜ ${courseText}`;
+
+        
+                    fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        displayAttendanceDataForSections(data);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка при получении данных о посещаемости для разделов:', error);
+                        alert('Ошибка при получении данных о посещаемости для разделов. Пожалуйста, попробуйте позже.');
+                    });
+                });
+            });
+        }
+
+
+
+        function addEventListenerToCourseCodes() {
+            document.querySelectorAll('.course-code').forEach(courseCode => {
+                courseCode.addEventListener('click', async function() {
+                    document.getElementById('pclass').style.display = 'none';
+                    document.getElementById('pclass1').style.display = 'none';
+                    //// Retrieve the sections from the data-sections attribute
+                    const courseCode = this.getAttribute('data-sections1');
+                    try {
+                        // Fetch teacher and course information
+                        const response = await fetch('http://localhost:8081/api/student/lesson/in_pre_info/' + courseCode, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+        
+
+                        document.getElementById('BreadcrumbAttSet').textContent = ` ➜ ${courseCode}`;
+                
+                        if (response.ok) {
+                            const preInfo = await response.json();
+                
+                            // Update the UI with fetched information\
+                            document.getElementById('modalStartCourseSectionName').textContent = preInfo.courseDesc;
+                            document.getElementById('modalEndCourseSectionName').textContent = preInfo.courseDesc;
+                            document.getElementById('teacherName').textContent = preInfo.teacherName;
+                            document.getElementById('courseDesc').textContent = preInfo.courseDesc;
+                 
+                            // Display the attendance set section
+                            const attSetSection = document.querySelector('.att-set');
+                            attSetSection.style.display = 'block';
+                
+                            // Hide the table container
+                            const tableContainer = document.querySelector('.table-container');
+                            tableContainer.style.display = 'none';
+                            
+                        } else {
+                            console.error('Failed to fetch teacher and course information:', response.statusText);
+                        }
+                    } catch (error) {
+                        console.error('Error during fetch operation:', error);
+                    }
+                    //alert(courseCode)
+                });
+                
+            });
+        }
+        
+
+                // Function to display attendance data for selected sections
+        function displayAttendanceDataForSections(data) {
+            document.getElementById('pclass').style.display = 'none';
+            document.getElementById('pclass1').style.display = 'none';
+            const container = document.querySelector('.table-container');
+            let table = '<table>';
+            table += '<tr><th>Date</th><th>Hour</th><th>Status</th><th>Place</th><th>Type</th><th>Week</th></tr>';
+        
+            data.forEach(entry => {
+                // Determine the cell content for attendance status
+                    let attStatusContent = entry.attStatus;
+                    if(entry.wentInWithCard) {
+                        // Replace with your actual SVG code for the 'Present' status
+                        attStatusContent = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="yellow" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                        </svg>`;
+                    }
+                    if(!entry.wentInWithCard){
+                        attStatusContent = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                        </svg>`;  
+                    }
+                    if(entry.attStatus === "ABSENT") {
+                        // Replace with your actual SVG code for the 'Present' status
+                        attStatusContent = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                                        </svg>`;
+                    }
+                    if(entry.attStatus === "WITH_REASON") {
+                        // Replace with your actual SVG code for the 'Present' status
+                        attStatusContent = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#71A4E1" class="bi bi-p-circle-fill" viewBox="0 0 16 16">
+                                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.5 4.002V12h1.283V9.164h1.668C10.033 9.164 11 8.08 11 6.586c0-1.482-.955-2.584-2.538-2.584zm2.77 4.072c.893 0 1.419-.545 1.419-1.488s-.526-1.482-1.42-1.482H6.778v2.97z"/>
+                                        </svg>`;
+                    }
+                    table += `<tr class="date-row" data-date="${entry.date}">
+                                <td>${entry.date}</td>
+                                <td>${entry.hour}</td>
+                                <td>${attStatusContent}</td> <!-- Use the determined content -->
+                                <td>${entry.place}</td>
+                                <td>${entry.type}</td>
+                                <td>${entry.week}</td>
+                            </tr>`;
+                });
+            table += '</table>';
+            container.innerHTML = table;
+        }
+</script>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Находим кнопку "Enter"
+        const enterButton = document.getElementById('Enterbtn');
+        const leaveButton = document.getElementById('Leavebtn')
+
+        var deer_map = ""
+
+          const yes = document.getElementById('confirmStart');
+          const no = document.getElementById('cancelStart');
+
+
+        const logAttendance = document.getElementById('confirmLog');
+        const noLog = document.getElementById('cancelSLog');
+        
+    
+        yes.addEventListener('click', function(event) {
+            console.log("yes is clicked")
+
+            var code = document.getElementById('code');  
+
+
+            const data = {
+                section: "C0002.02",  // Fill this with appropriate section name
+                code: code.value
+            }; 
+            
+            event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+            // Формируем объект с данными для отправки на сервер
+            const modal = document.getElementById('startModal');
+
+            // Открываем модальное окно
+            modal.style.display = 'none';
+
+            sendAttendanceCode(data);  
+            
+    
+            // Отправляем данные на сервер
+        });
+
+        no.addEventListener('click', function(event) {
+            console.log("no is clicked")
+            event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+            // Формируем объект с данными для отправки на сервер
+            const modal = document.getElementById('startModal');
+
+            // Открываем модальное окно
+            modal.style.display = 'none';
+            
+    
+            // Отправляем данные на сервер
+        });
+
+        logAttendance.addEventListener('click', function(event) {
+
+            
+
+
+            const data2 = {
+                section: "C0002.02"
+            }; 
+
+            const modal = document.getElementById('logModal');
+
+            // Открываем модальное окно
+            modal.style.display = 'none';
+            console.log('data2' + data2.section)
+            sendAttendanceCode2(data2);
+            //window.location.href = './attendence-page.html';
+        });
+
+        
+
+
+        noLog.addEventListener('click', function(event) {
+            console.log("no")
+
+            deer_map = "enter"
+            event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+            // Формируем объект с данными для отправки на сервер
+            const modal = document.getElementById('logModal');
+
+            // Открываем модальное окно
+            modal.style.display = 'none';
+            
+    
+            // Отправляем данные на сервер
+        });
+
+
+
+
+        // Добавляем обработчик события для клика по кнопке "Enter"
+        enterButton.addEventListener('click', function(event) {
+            console.log("enter")
+
+            deer_map = "enter"
+            event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+            // Формируем объект с данными для отправки на сервер
+            const modal = document.getElementById('startModal');
+
+            // Открываем модальное окно
+            modal.style.display = 'block';
+            
+    
+            // Отправляем данные на сервер
+        });
+
+
+
+        
+        // Добавляем обработчик события для клика по кнопке "Enter"
+        leaveButton.addEventListener('click', function(event) {
+            console.log("leave")
+
+            deer_map = "leave"
+            event.preventDefault(); // Предотвращаем стандартное поведение кнопки
+
+            // Формируем объект с данными для отправки на сервер
+            const modal = document.getElementById('logModal');
+
+            // Открываем модальное окно
+            modal.style.display = 'block';
+            
+    
+            // Отправляем данные на сервер
+        });
+
+
+        
+    });
+
+
+
+    // Функция для отправки кода посещения на сервер
+    async function sendAttendanceCode(data_pro) {
+        console.log(data_pro)
+        // URL для отправки данных
+    
+        // Токен аутентификации, если требуется
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:8081/api/student/lesson/in', {
+                        method: 'POST',
+                        headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data_pro),
+        });
+            if (response.ok) {
+                
+                console.log(response.body);
+                const data = await response.json();
+                console.log(data);
+                // Если запрос выполнен успешно, выводим алерт об успешной отправке
+                //alert('Attendance code sent successfully ' + data.code);
+                // Select the div element with the class "page-message"
+
+                const pageMessageDiv = document.querySelector('.page-message');
+                console.log(data)
+                
+                //pageMessageDiv.querySelector('h4').textContent = data.code ;
+                  pageMessageDiv.style.marginLeft = '250px';
+                  pageMessageDiv.style.marginTop = '-30px';
+                  pageMessageDiv.style.width = "350px";
+                if(data.code == 'JOIN_TO_SESSION_IS_ALREADY_DONE' || data.code == 'JOIN_SESSION_IS_ACCEPTED'){
+                    pageMessageDiv.style.color = 'white'; 
+                    pageMessageDiv.innerHTML = 'ATTENDANCE SUCCESSFULLY ENTERED !';
+                    pageMessageDiv.style.border = '1px solid green';
+                    pageMessageDiv.style.backgroundColor = 'green';
+                    pageMessageDiv.style.textAlign = "left";
+                }
+                else if(data.code == "WRONG_SECRET_CODE_JOIN_SESSION") {
+                    const pageMessageDiv = document.querySelector('.page-message');
+                    pageMessageDiv.style.color = 'white'; 
+                    pageMessageDiv.innerHTML = 'YOU HAVE ENTERED WRONG CODE !';
+                    pageMessageDiv.style.backgroundColor = 'red';
+                    pageMessageDiv.style.border = '1px solid red';
+                    pageMessageDiv.querySelector('h4').style.color = "lightyellow";
+                    pageMessageDiv.style.textAlign = "left";
+                }
+                else {
+                    const pageMessageDiv = document.querySelector('.page-message');
+                    pageMessageDiv.style.color = 'white'; 
+                    pageMessageDiv.innerHTML = 'YOU HAVE ENTERED NOT ON TIME !';
+                    pageMessageDiv.style.backgroundColor = 'red';
+                    pageMessageDiv.style.border = '1px solid red';
+                    pageMessageDiv.querySelector('h4').style.color = "lightyellow";
+                    pageMessageDiv.style.textAlign = "right";
+            } 
+        }
+    }
+
+
+    // Функция для отправки кода посещения на сервер
+    async function sendAttendanceCode2(data_pro) {
+
+        console.log(data_pro + 'data_pro')
+
+        const token = localStorage.getItem('token');
+
+        try {
+        const response = await fetch('http://localhost:8081/api/student/lesson/out', {
+                        method: 'POST',
+                        headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data_pro),
+        });
+
+        console.log("response" + response.status)
+        console.log("check" + response.ok)
+
+            if (response.ok) {
+                console.log(response.body);
+                const data = await response.json();
+                console.log(data);
+
+                console.log("data.code" + data.code)
+
+                const pageMessageDiv = document.querySelector('.page-message');
+                  pageMessageDiv.style.marginLeft = '400px';
+                  pageMessageDiv.style.marginTop = '-20px';
+                  pageMessageDiv.style.width = "350px";
+                    pageMessageDiv.style.color = 'white'; 
+                    pageMessageDiv.innerHTML = 'YOU LEAVED FROM THIS COURSE !';
+                    pageMessageDiv.style.border = '1px solid green';
+                    pageMessageDiv.style.backgroundColor = 'green';
+                    pageMessageDiv.style.textAlign = "left";
+                if(data.code == 'SESSION_IS_CLOSED_BY_TEACHER' || data.code == 'U_CAN_LEAVE_AFTER_15_MIN'){
+                    pageMessageDiv.innerHTML = 'YOU CAN NOT LEAVE COURSE !';
+                    pageMessageDiv.style.border = '1px solid red';
+                    pageMessageDiv.style.backgroundColor = 'red';
+                }
+
+            } else {
+                const pageMessageDiv = document.querySelector('.page-message');
+                  pageMessageDiv.style.marginLeft = '300px';
+                  pageMessageDiv.style.marginTop = '30px';
+                  pageMessageDiv.style.width = "350px";
+                    pageMessageDiv.style.color = 'white'; 
+                    pageMessageDiv.innerHTML = 'YOU CAN NOT LEAVE COURSE !';
+                    pageMessageDiv.style.border = '1px solid green';
+                    pageMessageDiv.style.backgroundColor = 'red';
+                    pageMessageDiv.style.textAlign = "left";
+            } 
+
+        } catch (error) {
+                const pageMessageDiv = document.querySelector('.page-message');
+                  pageMessageDiv.style.marginLeft = '300px';
+                  pageMessageDiv.style.marginTop = '30px';
+                  pageMessageDiv.style.width = "350px";
+                    pageMessageDiv.style.color = 'white'; 
+                    pageMessageDiv.innerHTML = 'YOU CAN NOT LEAVE COURSE !';
+                    pageMessageDiv.style.border = '1px solid green';
+                    pageMessageDiv.style.backgroundColor = 'red';
+                    pageMessageDiv.style.textAlign = "left";
+        }
+    }
+
+</script>
+</html>

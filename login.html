@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/styles/login.css">
+    <title>Login</title>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header__wrapper">
+                <div class="logo">
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="container">
+            <div class="main__wrapper">
+                <div class="login">
+                    <div class="title">
+                        <p>Login</p>
+                    </div>
+                    <form action="#" class="form">
+                        <input type="text" placeholder="Email" id="email" name="email" required>
+                        <input type="password" placeholder="Password" id="password" name="password" required>
+                        <div class="title">
+                            <div id="error" style="color: red;"></div>
+                        </div>
+                        <button type="submit">Enter</button>
+                    </form>
+                    <div class="links">
+                        <a href="pages/change/change-page.html">Forgot Password?</a>
+                        <a href="pages/register/register.html">Create New Account</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.querySelector('.form');
+            const errorElement = document.getElementById('error'); // Элемент для отображения ошибок
+
+            loginForm.addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
+
+                const login = emailInput.value;
+                const password = passwordInput.value;
+
+                const headers = new Headers();
+                headers.append('Content-Type', 'application/json');
+
+                try {
+                    const response = await fetch('http://localhost:8081/open-api/auth/login', {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify({ login, password }),
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        headers.append('Authorization', 'Bearer ' + data.token);
+                        headers.append('Content-Type', 'application/json');
+                        localStorage.setItem('token', data.token);
+
+
+                        console.log(data)
+                        switch (data.role) {
+                            case 'ADMIN':
+                                window.location.href = 'pages/admin/admin-page.html';
+                                break;
+                            case 'STUDENT':
+                                window.location.href = 'pages/student/home-page.html';
+                                break;
+                            case 'TEACHER':
+                                window.location.href = 'pages/teacher/home-page.html';
+                                break;
+
+                            default:
+                                console.error('Unknown role:', data.role);
+                        }
+                    } else {
+                        const responseData = await response.json(); // Parse JSON data
+                        const errorMessage = responseData.errorMessage; // Access message property
+                        errorElement.innerText = errorMessage;
+                    }
+                } catch (error) {
+                    console.error('Error during the fetch operation:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
+
+
+
+
+
