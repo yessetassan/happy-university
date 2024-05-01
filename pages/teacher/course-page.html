@@ -87,7 +87,7 @@
         let endParagraphText = "";
         document.addEventListener('DOMContentLoaded', function() {
             const jwtToken = localStorage.getItem('token');
-            fetch('http://localhost:8081/api/teacherLessonList', {
+            fetch('http://13.50.16.98:1000/api/teacherLessonList', {
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`
                 }
@@ -196,7 +196,7 @@
 
             try {
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:8081/api/teacher/start', false);
+                xhr.open('POST', 'http://13.50.16.98:1000/api/teacher/start', false);
                 xhr.setRequestHeader('Content-Type', 'application/json');
                 xhr.setRequestHeader('Authorization', `Bearer ${jwtToken}`);
                 xhr.send(JSON.stringify({ sectionName: sectionName }));
@@ -316,7 +316,7 @@
             
             try {
                 
-                const response = await fetch('http://localhost:8081/api/teacher/end', {
+                const response = await fetch('http://13.50.16.98:1000/api/teacher/end', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -379,7 +379,7 @@
 
         (async function () {
             try {
-                const response = await fetch('http://localhost:8081/api/person/v1/current', {
+                const response = await fetch('http://13.50.16.98:1000/api/person/v1/current', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,
