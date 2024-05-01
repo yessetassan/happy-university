@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abyssinica+SIL">
+    <link rel="stylesheet" href="../../assets/styles/profile-style.css">
+    <title>Teacher Profile Page</title>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header__wrapper"> 
+                <a class="logo" href="./home-page.html"></a> 
+            <!-- </div> -->
+                <div class="admin">
+                    <div class="admin-details">
+                        <div class="admin-info">
+                            <p>NAME SURNAME:</p> 
+                            <p id="name">PALENSHEEVA PALENSHE</p>
+                        </div>
+                        <div class="admin-info">
+                            <p>LAST LOGIN DATE:</p> 
+                            <p id="login-date">08 FEB 2024</p>
+                        </div>
+                        <div class="admin-info">
+                            <p>STATUS:</p> 
+                            <p id="statusName">TEACHER</p>
+                        </div>
+                    </div>
+                    <div class="icon" style="background-image: url(../../assets/images/icon.png);">
+                    </div>
+                <!-- </div> -->
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="container">
+            <div class="main__wrapper">
+                <div class="sidebar__wrapper">
+                    <nav class="menu">
+                        <a href="./home-page.html">HOME PAGE</a>
+                        <a href="./schedule-page.html">Course schedule</a>
+                        <a href="./course-page.html">start course</a>
+                        <a href="./attendence-page.html">ATTENDANCE</a>
+                        <a href="./teacher-absences.html">ABSENCES</a>
+                        <a href="#" id="selected">my profile</a>
+                        <form action="" class="logout">
+                            <button >Log out</button>
+                        </form>
+                    </nav>
+                </div>
+                <div class="main__content">
+                    <div class="page-name">
+                        <h1>MY PROFILE</h1>
+                    </div>
+                    <form class="change" action="#">
+                        <button class="btn select" id="info">MY INFO</button>
+                        <button class="btn" id="edit">PHOTO EDITING</button>
+                    </form>
+                    <div class="info">
+                        <div class="details">
+                            <div class="personal-info">
+                                <p >NAME SURNAME:</p> 
+                                <p id="name">PALENSHEEVA PALENSHE</p>
+                            </div>
+                            <div class="personal-info">
+                                <p >GENDER:</p> 
+                                <p id="gender">FEMALE</p>
+                            </div>
+                            <div class="personal-info">
+                                <p>EMAIL:</p> 
+                                <p id="email">palensheeva.palenshe@gmail.com</p>
+                            </div>
+                            <div class="personal-info">
+                                <p>BIRTH DATE:</p>
+                                <p id="birth-date">09-FEB-04</p> 
+                            </div>
+                            <div class="personal-info">
+                                <p>TELEPHONE:</p> 
+                                <p id="login-date">8 705 915 0429</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image" style="display: none;">
+                        <p>Change Image</p>
+                        <form action="#" class="choose">
+                            <input type="file" id="inputFile" class="upload-label" accept=".jpeg, .jpg, .png">
+                            <button id="save" class="save">Save</button>
+                        </form>
+                    </div>
+                    <div class="notif" style="display: none;">
+                        <p style="color: green;">PHOTO UPLOADED SUCCESSFULLY!</p>
+                        <p style="color: red;">SIZE OF PHOTO DOESN’T MATCH!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const url = 'url(../../assets/images/icon.png)';
+        const icon = document.querySelector('.icon');
+        icon.style.backgroundImage = url;
+
+        const info = document.querySelector('#info');
+        const edit = document.querySelector('#edit');
+        const saveButton = document.getElementById('save');
+        const infoClass = document.querySelector('.info');
+        const imageClass = document.querySelector('.image');
+        const notifClass = document.querySelector('.notif'); 
+
+        // Event listener for MY INFO button
+        info.addEventListener("click", () => {
+            info.classList.add('select'); 
+            edit.classList.remove('select'); 
+            infoClass.style.display = 'block'; 
+            imageClass.style.display = 'none'; 
+            notifClass.style.display = 'none';
+        });
+
+        // Event listener for PHOTO EDITING button
+        edit.addEventListener("click", () => {
+            edit.classList.add('select'); 
+            info.classList.remove('select'); 
+            infoClass.style.display = 'none'; 
+            imageClass.style.display = 'block'; 
+            notifClass.style.display = 'none'; 
+        });
+
+        //Save button functionality
+        const save = document.querySelector('.save');
+        saveButton.addEventListener("click", (e) => {
+            e.preventDefault(); 
+            const inputFile = document.querySelector('#inputFile');
+            if (inputFile.files.length > 0) { // Check if a file is selected
+                const fileSize = inputFile.files[0].size;
+                const maxFileSize = 2 * 1024 * 1024; // Set a max file size (e.g., 2MB)
+
+                // Here you can add your own validation for file size or type if necessary
+                if (fileSize <= maxFileSize) {
+                    // File size is acceptable
+                    const fileUrl = URL.createObjectURL(inputFile.files[0]);
+                    icon.style.backgroundImage = 'url(' + fileUrl + ')';
+                    notifClass.style.display = 'block';
+                    notifClass.innerHTML = '<p style="color: green;">PHOTO UPLOADED SUCCESSFULLY!</p>';
+                } else {
+                    // File size is too large
+                    notifClass.style.display = 'block';
+                    notifClass.innerHTML = '<p style="color: white;">SIZE OF PHOTO DOESN’T MATCH!</p>';
+                }
+            } else {
+                // No file was selected
+                notifClass.style.display = 'block';
+                notifClass.innerHTML = '<p style="color: white;">NO FILE SELECTED!</p>';
+            }
+        });
+    });
+    </script>
+
+    <script>
+        // Обработчик события для кнопки "Log out"
+        document.querySelector('.logout button').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+            localStorage.removeItem('token'); // Удаляем токен из локального хранилища
+            window.location.href = '../../index.html'; // Перенаправляем пользователя на страницу входа
+        });
+    </script>
+
+</body>
+</html>
