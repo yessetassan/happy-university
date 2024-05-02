@@ -73,8 +73,8 @@
                     </div>
                 </div>
                 <div class="notif">
-                    <p style="display: none;", style="color: green;">ABSENCE WAS ACCEPTED SUCCESSFULLY!</p>
-                    <p style="display: block;",  style="color: red;">ABSENCE WAS REJECTED!</p>
+                    <p style="display: none; background-color: green; color: aliceblue;", id="accept">ABSENCE WAS ACCEPTED SUCCESSFULLY!</p>
+                    <p style="display: none; background-color: red; color: aliceblue;", id="reject">ABSENCE WAS REJECTED!</p>
                 </div>
 
                  <!-- Accept Modal -->
@@ -90,7 +90,7 @@
                 <!-- Reject Modal -->
                 <div id="rejectModal" class="modal">
                     <div class="modal-content">
-                        <span class="close" id="closeReject">&times;</span>
+                        <span class="close1" id="closeReject">&times;</span>
                         <p class="question">Are you sure you want to reject this item?</p>
                         <button id="confirmReject" style="margin-left: 260px;" class="modal-btn">Yes</button>
                         <button id="cancelReject" style="margin-left: 20px;" class="modal-btn">No</button>
@@ -299,7 +299,6 @@ async function fetchDataWithToken2() {
 // Function to handle accept button click
 
     async function handleAcceptClick(reasonId) {
-        openModal(reasonId, 'Accept');
         try {
             const token = localStorage.getItem('token'); // Получаем JWT токен из локального хранилища
             if (!token) {
@@ -366,20 +365,47 @@ async function fetchDataWithToken2() {
         const rejectModal = document.getElementById('rejectModal');
         const confirmAccept = document.getElementById('confirmAccept');
         const cancelAccept = document.getElementById('cancelAccept');
+        const confirmReject = document.getElementById('confirmReject');
+        const acceptNotif = document.getElementById('accept');
+        const rejectNotif = document.getElementById('reject');
 
         if(action == 'Reject'){
             console.log('Reject clicked.');
             rejectModal.style.display = 'block';
+            confirmReject.onclick = function(){
+                handleRejectClick(itemId);
+                rejectModal.style.display = 'none';
+                rejectNotif.style.display = 'block'; // Show error message
+                document.querySelector('.notif p:last-child').style.backgroundColor = 'red';
+                    
+            }
+            cancelReject.onclick = function(){
+                rejectModal.style.display = 'none';
+            }
         }
         if(action == 'Accept'){
             console.log('Accept clicked.');
             acceptModal.style.display = 'block';
+            confirmAccept.onclick = function(){
+                handleAcceptClick(itemId);
+                acceptModal.style.display = 'none';
+                document.querySelector('.notif p:first-child').style.display = 'block'; // Show success message
+
+            }
+            cancelAccept.onclick = function(){
+                acceptModal.style.display = 'none';
+            }
         }
 
         // Close modal when close button is clicked
         const span = document.getElementsByClassName("close")[0];
         span.onclick = function() {
-            modal.style.display = 'none';
+            acceptModal.style.display = 'none';
+        };
+
+        const span1 = document.getElementsByClassName("close1")[0];
+        span1.onclick = function() {
+            rejectModal.style.display = 'none';
         };
     }
     let com = 0
@@ -481,18 +507,79 @@ async function fetchDataWithToken2() {
     }
 
 
-    // Load and render data
-    document.addEventListener('DOMContentLoaded', async () => {
-        const data = await fetchDataWithToken();
-        renderData(data);
-    });
+    function renderData2(data) {
+        // Create a new div to contain the data
+        const newDataDiv2 = document.createElement('div7');
+        newDataDiv2.classList.add('new-data-container'); // Add a class to style the div if needed
+        const div = document.getElementById('div4');
+
+            data.forEach(item => { 
+                const div2 = document.createElement('div'); 
+                div2.classList.add('div6'); 
+                
+                // Style adjustments 
+                div2.style.backgroundColor = 'var(--bg-color, #f8f9fa)'; 
+                div2.style.border = '1px solid #dee2e6'; 
+                div2.style.borderRadius = '10px'; 
+                div2.style.padding = '20px'; 
+                div2.style.marginBottom = '20px'; 
+                div2.style.marginLeft = '50px'; 
+                div2.style.position = 'relative'; 
+                div2.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)'; 
+                div2.style.transition = 'all 0.3s ease'; 
+                
+                // Status badge 
+                const status = document.createElement('div'); 
+                status.textContent = item.status; 
+                status.style.position = 'absolute'; 
+                status.style.top = '10px'; 
+                status.style.right = '10px'; 
+                status.style.backgroundColor = '#FF6347'; 
+                status.style.color = '#212529'; 
+                status.style.padding = '5px 10px'; 
+                status.style.borderRadius = '50px'; 
+                status.style.fontWeight = 'bold'; 
+                div2.appendChild(status); 
+
+                if(item.status == "ACCEPTED"){
+                    status.style.backgroundColor = 'lightgreen'; 
+                }
+                
+                // HTML content with dynamic download link 
+                div2.innerHTML += ` 
+                    <p style="margin-bottom: 10px;"><strong>Student:</strong> <i class="fas fa-calendar-check"></i> ${item.fullName}</p>
+                    <p style="margin-bottom: 10px;"><strong>Subject:</strong> <i class="fas fa-calendar-check"></i> ${item.section}</p> 
+                    <p style="margin-bottom: 10px;"><strong>Description:</strong> ${item.description}</p> 
+                    <p style="margin-bottom: 10px;"><strong>Document:</strong> <i class="fas fa-file-alt"></i> <a href="https://yesko-bucket-s3.s3.eu-north-1.amazonaws.com/${encodeURIComponent(item.document)}" download="${encodeURIComponent(item.document)}" style="text-decoration: none; color: #0056b3;">${item.document}</a></p> 
+                    <p style="margin-bottom: 10px;"><strong>Date From:</strong> <i class="fas fa-calendar-alt"></i> ${item.dateFrom}</p> 
+                    <p style="margin-bottom: 10px;"><strong>Date To:</strong> <i class="fas fa-calendar-check"></i> ${item.dateTo}</p> 
+                `; 
+                
+                // Hover effects 
+                div2.addEventListener('mouseenter', function() { 
+                    this.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)'; 
+                    this.style.transform = 'scale(1.03)'; 
+                }); 
+                
+                div2.addEventListener('mouseleave', function() { 
+                    this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)'; 
+                    this.style.transform = 'scale(1)'; 
+                }); 
+                
+                div.appendChild(div2); 
+            });
+        document.body.appendChild(newDataDiv);
+    }
 
     // Load and render data
     document.addEventListener('DOMContentLoaded', async () => {
+        const modal = document.getElementById('acceptModal');
         const data = await fetchDataWithToken();
         renderData(data);
 
-    });    
+        const data2 = await fetchDataWithToken2();
+        renderData2(data2);
+    });  
     </script>
 </body>
 </html>

@@ -181,7 +181,7 @@
                     if (obj.status === 200) { 
                         displayMessage('You have successfully registered!', 'green'); 
                         setTimeout(function() { 
-                            window.location.href = '../../index.html';
+                            window.location.href = '../../index.html'; 
                         }, 3000); 
                     } else if (obj.data.errorMessage) { // Check if message exists in the response 
                         console.log('log 0') 
@@ -195,7 +195,7 @@
                     console.log('log 2')
                     displayMessage('You have successfully registered!', 'green'); 
                         setTimeout(function() { 
-                            window.location.href = '../../index.html';
+                            window.location.href = '../../index.html'; 
                         }, 3000);
                 }); 
             }); 

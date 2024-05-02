@@ -498,6 +498,21 @@ table, tr, td{
     text-decoration: none;
     cursor: pointer;
 }
+
+.close1 {
+    float: right; /* Floats the button to the right side of its containing element */
+    font-size: 25px;
+    font-weight: 100px;
+    cursor: pointer; 
+    margin-top: -15px;
+}
+
+.close1:hover,
+.close1:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
   
 .modal-btn {
     margin-top: 80px;
