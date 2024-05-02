@@ -42,7 +42,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const loginForm = document.querySelector('.form');
-            const errorElement = document.getElementById('error'); // Элемент для отображения ошибок
+            const errorElement = document.getElementById('error'); // Element to display errors
 
             loginForm.addEventListener('submit', async function (event) {
                 event.preventDefault();
@@ -57,10 +57,16 @@
                 headers.append('Content-Type', 'application/json');
 
                 try {
-                    const response = await fetch('http://13.50.16.98:1000/open-api/auth/login', {
+                    // Use the proxy server URL instead of the API URL
+                    const proxyUrl = 'https://your-proxy-server.com/proxy';
+                    const response = await fetch(proxyUrl, {
                         method: 'POST',
                         headers: headers,
-                        body: JSON.stringify({ login, password }),
+                        body: JSON.stringify({
+                            url: 'http://13.50.16.98:1000/open-api/auth/login', // Original API URL
+                            login,
+                            password
+                        }),
                     });
 
                     if (response.ok) {
@@ -69,8 +75,7 @@
                         headers.append('Content-Type', 'application/json');
                         localStorage.setItem('token', data.token);
 
-
-                        console.log(data)
+                        console.log(data);
                         switch (data.role) {
                             case 'ADMIN':
                                 window.location.href = 'pages/admin/admin-page.html';
@@ -81,7 +86,6 @@
                             case 'TEACHER':
                                 window.location.href = 'pages/teacher/home-page.html';
                                 break;
-
                             default:
                                 console.error('Unknown role:', data.role);
                         }
@@ -96,6 +100,7 @@
             });
         });
     </script>
+
 </body>
 </html> 
 
