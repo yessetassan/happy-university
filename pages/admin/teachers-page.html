@@ -152,7 +152,7 @@
 
 
         function fetchAllStudentData() {
-            const apiUrl = `http://13.50.16.98:1000/api/list/person?role=ROLE_TEACHER&login=${currentSearchTerm}&page=${currentPage}`;
+            const apiUrl = `/api/api/list/person?role=ROLE_TEACHER&login=${currentSearchTerm}&page=${currentPage}`;
             const token = localStorage.getItem('token');
             fetch(apiUrl, {
                 method: 'GET',
@@ -191,7 +191,7 @@
 
         (async function () {
             try {
-                const response = await fetch('http://13.50.16.98:1000/api/person/v1/current', {
+                const response = await fetch('/api/api/person/v1/current', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`,

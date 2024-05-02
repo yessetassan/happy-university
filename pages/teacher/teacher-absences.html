@@ -142,7 +142,7 @@
     <script>
        (async function () {
             try {
-                const response = await fetch('http://13.50.16.98:1000/api/person/v1/current', {
+                const response = await fetch('/api/api/person/v1/current', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
@@ -250,7 +250,7 @@ async function fetchDataWithToken() {
             throw new Error('JWT token not found');
         }
 
-        const response = await fetch('http://13.50.16.98:1000/api/reason', {
+        const response = await fetch('/api/api/reason', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -277,7 +277,7 @@ async function fetchDataWithToken2() {
             throw new Error('JWT token not found');
         }
 
-        const response = await fetch('http://13.50.16.98:1000/api/reason?checked=true', {
+        const response = await fetch('/api/api/reason?checked=true', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -306,7 +306,7 @@ async function fetchDataWithToken2() {
                 throw new Error('JWT token not found');
             }
     
-            const response = await fetch(`http://13.50.16.98:1000/api/reason/accept/${reasonId}`, {
+            const response = await fetch(`/api/api/reason/accept/${reasonId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -337,7 +337,7 @@ async function fetchDataWithToken2() {
                 throw new Error('JWT token not found');
             }
     
-            const response = await fetch(`http://13.50.16.98:1000/api/reason/reject/${reasonId}`, {
+            const response = await fetch(`/api/api/reason/reject/${reasonId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

@@ -191,7 +191,7 @@
 <script>
     (async function () {
         try {
-            const response = await fetch('http://13.50.16.98:1000/api/person/v1/current', {
+            const response = await fetch('/api/api/person/v1/current', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
@@ -222,7 +222,7 @@
         
         // Function to fetch attendance data from the API
         function fetchAttendanceData() {
-            const apiUrl = 'http://13.50.16.98:1000/api/student/attStatus';
+            const apiUrl = '/api/api/student/attStatus';
             const token = localStorage.getItem('token');
         
             fetch(apiUrl, {
@@ -299,7 +299,7 @@
                     const courseText = this.textContent.trim();
                     const sections = this.getAttribute('data-sections');
                     const token = localStorage.getItem('token');
-                    const apiUrl = `http://13.50.16.98:1000/api/student/attStatus/bySection/` + sections;
+                    const apiUrl = `/api/api/student/attStatus/bySection/` + sections;
         
                     // Обновление текста "хлебной крошки"
                     //document.getElementById('BreadcrumbAttSet').textContent = ` - ${courseText}`;
@@ -336,7 +336,7 @@
                     const courseCode = this.getAttribute('data-sections1');
                     try {
                         // Fetch teacher and course information
-                        const response = await fetch('http://13.50.16.98:1000/api/student/lesson/in_pre_info/' + courseCode, {
+                        const response = await fetch('/api/api/student/lesson/in_pre_info/' + courseCode, {
                             method: 'GET',
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
@@ -571,7 +571,7 @@
     
         // Токен аутентификации, если требуется
         const token = localStorage.getItem('token');
-        const response = await fetch('http://13.50.16.98:1000/api/student/lesson/in', {
+        const response = await fetch('/api/api/student/lesson/in', {
                         method: 'POST',
                         headers: {
                 'Content-Type': 'application/json',
@@ -632,7 +632,7 @@
         const token = localStorage.getItem('token');
 
         try {
-        const response = await fetch('http://13.50.16.98:1000/api/student/lesson/out', {
+        const response = await fetch('/api/api/student/lesson/out', {
                         method: 'POST',
                         headers: {
                 'Content-Type': 'application/json',
