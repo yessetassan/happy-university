@@ -83,6 +83,10 @@
 
                                   </select>
                             </label>
+                            <label for="other-reason" class="label" style="display:none;">
+                                SPECIFY YOUR REASON:
+                                <input type="text" id="other-reason" name="other-reason" style="margin-left: 240px;">
+                            </label>
     
     
                             <label for="from" class="label">
@@ -100,8 +104,9 @@
                                 UPLOAD THE DOCUMENT :
                                 <!-- <input type="file" id="file-chooser" required/> -->
                                 <div class="upload-container"required>
-                                    <input type="file" id="file-chooser" required style="display: none;">
+                                    <input type="file" id="file-chooser" accept=".pdf,.jpg,.jpeg,.png" required style="display: none;">
                                     <button id="uploadBtn" onclick="document.getElementById('file-chooser').click()">Upload File</button>
+                                    <div id="tooltip">You can upload only .pdf,.jpg,.jpeg,.png files.</div>
                                     <div id="fileInfo"></div>
                                 </div>
                             </label>
@@ -140,14 +145,47 @@
     <script>
         document.getElementById('file-chooser').addEventListener('change', function() {
             var fileInfo = document.getElementById('fileInfo');
-            var files = this.files;
-            if (files.length > 0) {
-                var file = files[0];
-                fileInfo.innerHTML = `File Name: ${file.name} <br> File Type: ${file.type}`;
+            var file = this.files[0];
+
+            if (file) {
+                if (file.size > 5000000) { 
+                    alert("File size should not exceed 5 MB.");
+                    this.value = ""; 
+                    fileInfo.innerHTML = "";
+                } else {
+                    fileInfo.innerHTML = `File Name: ${file.name} <br> File Type: ${file.type}`;
+                }
             } else {
                 fileInfo.innerHTML = "";
             }
         });
+
+
+        document.getElementById('reason').addEventListener('change', function() {
+            var otherReasonLabel = document.querySelector('label[for="other-reason"]');
+            if (this.value === 'Other') {
+                otherReasonLabel.style.display = 'block';
+            } else {
+                otherReasonLabel.style.display = 'none';
+            }
+        });
+
+        document.getElementById('uploadBtn').addEventListener('mouseenter', function() {
+            // Показать уведомление
+            var tooltip = document.getElementById('tooltip');
+            tooltip.style.display = 'block';
+
+            // Позиционирование уведомления относительно кнопки
+            var btnRect = this.getBoundingClientRect();
+            tooltip.style.left = btnRect.left + 'px';
+            tooltip.style.top = (btnRect.top - tooltip.offsetHeight - 10) + 'px'; // 10 пикселей над кнопкой
+        });
+
+        document.getElementById('uploadBtn').addEventListener('mouseleave', function() {
+            // Скрыть уведомление
+            document.getElementById('tooltip').style.display = 'none';
+        });
+
     
     </script>
     <script>
@@ -167,7 +205,6 @@
             document.getElementById('div2').style.display = 'none';
             info.classList.add('select'); 
             edit.classList.remove('select'); 
-
             console.log('Кнопка ABSENCES нажата');
         });
     
@@ -215,6 +252,25 @@
         })();
     </script>
 
+
+<!-- <div id="acceptModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeAccept">&times;</span>
+        <p class="question">Are you sure you want to accept this item?</p>
+        <button id="confirmAccept" style="margin-left: 260px;" class="modal-btn">Yes</button>
+        <button id="cancelAccept" style="margin-left: 20px;" class="modal-btn">No</button>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div id="rejectModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeReject">&times;</span>
+        <p class="question">Are you sure you want to reject this item?</p>
+        <button id="confirmReject" style="margin-left: 260px;" class="modal-btn">Yes</button>
+        <button id="cancelReject" style="margin-left: 20px;" class="modal-btn">No</button>
+    </div>
+</div> -->
     
     <script>
 
@@ -241,6 +297,7 @@
                 const formData = new FormData(form);
         
                 const reason = document.getElementById('reason').value;
+                const otherReason = document.getElementById('other-reason').value;
                 const from = document.getElementById('from').value;
                 const to = document.getElementById('to').value;
                 const reasonfile = document.getElementById('file-chooser').value;
@@ -262,12 +319,14 @@
                     str = str.substring(1); 
                 }
 
+                let description = reason === 'Other' ? otherReason : reason;
+
                 const body = {
                     section:section,
-                     description: reason, 
+                     description: description, 
                      document: str, 
                      from: from, 
-                     to: to
+                     to: to,
                    } 
 
                 console.log(body)
@@ -300,9 +359,6 @@
                     console.error('Error during fetch operation:', error);
                 }
                 };
-
-                
-
             });
         
             // Event listener for pressing Enter key
@@ -436,6 +492,15 @@ function renderData(data) {
         div2.style.position = 'relative'; 
         div2.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)'; 
         div2.style.transition = 'all 0.3s ease'; 
+
+         // HTML content with dynamic download link 
+         div2.innerHTML += ` 
+            <p style="margin-bottom: 10px;"><strong>Subject:</strong> <i class="fas fa-calendar-check"></i> ${item.section}</p> 
+            <p style="margin-bottom: 10px;"><strong>Description:</strong> ${item.description}</p> 
+            <p style="margin-bottom: 10px;"><strong>Document:</strong> <i class="fas fa-file-alt"></i> <a href="https://yesko-bucket-s3.s3.eu-north-1.amazonaws.com/${encodeURIComponent(item.document)}" download="${encodeURIComponent(item.document)}" style="text-decoration: none; color: #0056b3;">${item.document}</a></p> 
+            <p style="margin-bottom: 10px;"><strong>Date From:</strong> <i class="fas fa-calendar-alt"></i> ${item.dateFrom}</p> 
+            <p style="margin-bottom: 10px;"><strong>Date To:</strong> <i class="fas fa-calendar-check"></i> ${item.dateTo}</p> 
+        `; 
      
         // Status badge 
         const status = document.createElement('div'); 
@@ -450,22 +515,26 @@ function renderData(data) {
         status.style.fontWeight = 'bold'; 
         div2.appendChild(status); 
 
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'DELETE';
+        deleteButton.onclick = function() { deleteItem(item.id); };
+        deleteButton.style.marginTop = '10px';
+        deleteButton.style.backgroundColor = '#FF6347'; 
+        deleteButton.style.borderColor = '#FF6347';
+        deleteButton.style.color = 'white'; 
+        deleteButton.style.padding = '5px 5px'; 
+        deleteButton.style.borderRadius = '20px';  
+        
+
         if(item.status == "ACCEPTED"){
             status.style.backgroundColor = 'lightgreen'; 
         }
         if(item.status == "REJECTED"){
             status.style.backgroundColor = '#FF6347'; 
         }
-     
-        // HTML content with dynamic download link 
-        div2.innerHTML += ` 
-            <p style="margin-bottom: 10px;"><strong>Subject:</strong> <i class="fas fa-calendar-check"></i> ${item.section}</p> 
 
-            <p style="margin-bottom: 10px;"><strong>Description:</strong> ${item.description}</p> 
-            <p style="margin-bottom: 10px;"><strong>Document:</strong> <i class="fas fa-file-alt"></i> <a href="https://yesko-bucket-s3.s3.eu-north-1.amazonaws.com/${encodeURIComponent(item.document)}" download="${encodeURIComponent(item.document)}" style="text-decoration: none; color: #0056b3;">${item.document}</a></p> 
-            <p style="margin-bottom: 10px;"><strong>Date From:</strong> <i class="fas fa-calendar-alt"></i> ${item.dateFrom}</p> 
-            <p style="margin-bottom: 10px;"><strong>Date To:</strong> <i class="fas fa-calendar-check"></i> ${item.dateTo}</p> 
-        `; 
+        // Adding elements to the div
+        div2.appendChild(status); // Status badge first
      
         // Hover effects 
         div2.addEventListener('mouseenter', function() { 
@@ -481,6 +550,31 @@ function renderData(data) {
         div.appendChild(div2); 
     });
     document.body.appendChild(newDataDiv);
+}
+
+function deleteItem(id) {
+    if (!confirm("Are you sure you want to delete this item?")) {
+        return; // Если пользователь отказался, прервать функцию
+    }
+
+    fetch(`http://13.50.16.98:1000/api/reason/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            alert('Item deleted successfully!');
+            // Перезагрузите или обновите данные, чтобы показать изменения
+            fetchDataWithToken().then(renderData);
+        } else {
+            alert('Failed to delete the item.');
+        }
+    }).catch(error => {
+        console.error('Error deleting the item:', error);
+        alert('Error deleting the item.');
+    });
 }
 
 // Load and render data

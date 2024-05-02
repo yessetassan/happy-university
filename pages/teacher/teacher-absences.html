@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abyssinica+SIL">
+    <link rel="stylesheet" href="../../pages/teacher/teacher-absences.css">
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+
+    <title>Student Absence Page</title>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header__wrapper"> 
+                <a class="logo" href="./home-page.html"></a> 
+            <!-- </div> -->
+                <div class="admin">
+                    <div class="admin-details">
+                        <div class="admin-info">
+                            <p>NAME SURNAME:</p> 
+                            <p id="name">PALENSHEEVA PALENSHE</p>
+                        </div>
+                        <div class="admin-info">
+                            <p>LAST LOGIN DATE:</p> 
+                            <p id="login-date">08 FEB 2024</p>
+                        </div>
+                        <div class="admin-info">
+                            <p>STATUS:</p> 
+                            <p id="statusName">TEACHER</p>
+                        </div>
+                    </div>
+                    <div class="icon" style="background-image: url(../../assets/images/icon.png);">
+                    </div>
+                <!-- </div> -->
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="container">
+            <div class="main__wrapper">
+                <div class="sidebar__wrapper">
+                    <nav class="menu">
+                        <a href="./home-page.html">HOME PAGE</a>
+                        <a href="./schedule-page.html">Course schedule</a>
+                        <a href="./course-page.html">start course</a>
+                        <a href="./attendence-page.html">ATTENDANCE</a>
+                        <a href="./teacher-absences.html" id="selected">ABSENCES</a>
+                        <a href="./profile-page.html">my profile</a>
+                        <form action="" class="logout">
+                            <button >Log out</button>
+                        </form>
+                    </nav>
+                </div>
+                <div class="main__content">
+                    <div class="page-name">
+                        <h1>ABSENCES</h1>
+
+                    </div>
+                    <form class="change" action="#">
+                        <button class="btn select" id="button1">UNCHECKED</button>
+                        <button class="btn" id="button2">CHECKED</button>
+                    </form>
+
+                    <!-- UNCHECKED -->
+                    <div id="div1">
+                      <div id="div3"></div>
+                    </div>
+
+                    <!-- CHECKED -->
+                    <div id="div2">
+                         <div id="div4"></div>
+                    </div>
+                </div>
+                <div class="notif">
+                    <p style="display: none;", style="color: green;">ABSENCE WAS ACCEPTED SUCCESSFULLY!</p>
+                    <p style="display: block;",  style="color: red;">ABSENCE WAS REJECTED!</p>
+                </div>
+
+                 <!-- Accept Modal -->
+                <div id="acceptModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeAccept">&times;</span>
+                        <p class="question">Are you sure you want to accept this item?</p>
+                        <button id="confirmAccept" style="margin-left: 260px;" class="modal-btn">Yes</button>
+                        <button id="cancelAccept" style="margin-left: 20px;" class="modal-btn">No</button>
+                    </div>
+                </div>
+                
+                <!-- Reject Modal -->
+                <div id="rejectModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeReject">&times;</span>
+                        <p class="question">Are you sure you want to reject this item?</p>
+                        <button id="confirmReject" style="margin-left: 260px;" class="modal-btn">Yes</button>
+                        <button id="cancelReject" style="margin-left: 20px;" class="modal-btn">No</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Получаем ссылки на кнопки
+        var button1 = document.getElementById('button1');
+        var button2 = document.getElementById('button2');
+        const info = document.querySelector('#button1');
+        const edit = document.querySelector('#button2');
+        
+        document.getElementById('div2').style.display = 'none';
+        document.getElementById('div1').style.display = 'block';
+
+
+        // Добавляем обработчики событий для каждой кнопки
+        button1.addEventListener('click', function() {
+            document.getElementById('div1').style.display = 'block';
+            document.getElementById('div2').style.display = 'none';
+            info.classList.add('select'); 
+            edit.classList.remove('select'); 
+            console.log('Кнопка ABSENCES нажата');
+        });
+    
+        button2.addEventListener('click', function() {
+            document.getElementById('div2').style.display = 'block';
+            document.getElementById('div1').style.display = 'none';
+            info.classList.remove('select'); 
+            edit.classList.add('select'); 
+            console.log('Кнопка HISTORY нажата');
+        });
+    </script>
+
+    <script>
+        // Обработчик события для кнопки "Log out"
+        document.querySelector('.logout button').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+            localStorage.removeItem('token'); // Удаляем токен из локального хранилища
+            window.location.href = '../../index.html'; // Перенаправляем пользователя на страницу входа
+        });
+    </script>
+
+    <script>
+       (async function () {
+            try {
+                const response = await fetch('http://13.50.16.98:1000/api/person/v1/current', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    document.getElementById('name').textContent = `${userData.lastname || ''} ${userData.firstname || ''}`;
+                    document.getElementById('login-date').textContent = userData.lastLogin || '';
+                    document.getElementById('status').textContent = userData.rolePerson || '';
+
+                } else {
+                    console.error('Failed to fetch user details:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error during fetch operation:', error);
+            }
+        })();
+    </script>
+
+    <script>
+        AWS.config.update({
+            accessKeyId: "AKIA3FLD5DVIBVUNAEM7",
+            secretAccessKey: "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",
+            region: "eu-north-1"
+          });
+          
+          function uploadThat() {
+            var fileChooser = document.getElementById('file-chooser');
+            var file = fileChooser.files[0];
+          
+            if (file) {
+              var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+              var params = {
+                Bucket: 'yesko-bucket-s3',
+                Key: file.name,
+                Body: file
+              };
+          
+              s3.putObject(params, function(err, data) {
+                if (err) {
+                  console.log(err, err.stack);
+                } else {
+                  console.log("--------------------------------------------------------------------------------------------------------")
+                  console.log(params)
+                  console.log("Successfully uploaded data to yesko-bucket-s3/" + file.name);
+                }
+              });
+            } else {
+              console.log('No file selected.');
+            }
+          }
+          
+          function downloadFile(s3, bucket, key, downloadLink) {
+            var params = {
+              Bucket: bucket,
+              Key: key
+            };
+            s3.getSignedUrl('getObject', params, function (err, url) {
+              if (err) {
+                console.log(err);
+              } else {
+                downloadLink.href = url;
+              }
+            });
+          }
+          
+          function getSignedDownloadUrl(bucketName, objectKey) {
+            var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+            var params = {
+              Bucket: bucketName,
+              Key: objectKey,
+              Expires: 60 // The URL will be valid for 60 seconds
+            };
+          
+            s3.getSignedUrl('getObject', params, function(err, url) {
+              if (err) {
+                console.log("Error getting signed URL: ", err);
+                return null;
+              } else {
+                console.log("The URL is", url);
+                // If you need to start the download immediately:
+                window.location.href = url;
+              }
+            }
+            );
+        }          
+ 
+    </script>
+
+
+
+
+
+
+    <script>
+
+    // Fetch data from the API endpoint with JWT token
+async function fetchDataWithToken() {
+    try {
+        const token = localStorage.getItem('token'); // Get JWT token from local storage
+        if (!token) {
+            throw new Error('JWT token not found');
+        }
+
+        const response = await fetch('http://13.50.16.98:1000/api/reason', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return [];
+    }
+}
+
+// Fetch data from the API endpoint with JWT token and checked parameter set to true
+async function fetchDataWithToken2() {
+    try {
+        const token = localStorage.getItem('token'); // Get JWT token from local storage
+        if (!token) {
+            throw new Error('JWT token not found');
+        }
+
+        const response = await fetch('http://13.50.16.98:1000/api/reason?checked=true', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        return [];
+    }
+}
+
+// Function to handle accept button click
+
+    async function handleAcceptClick(reasonId) {
+        openModal(reasonId, 'Accept');
+        try {
+            const token = localStorage.getItem('token'); // Получаем JWT токен из локального хранилища
+            if (!token) {
+                throw new Error('JWT token not found');
+            }
+    
+            const response = await fetch(`http://13.50.16.98:1000/api/reason/accept/${reasonId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Дополнительные данные, если нужно
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to accept reason');
+            }
+    
+            const data = await response.json();
+            console.log('Successfully accepted item with ID:', reasonId);
+            console.log('Server response:', data);
+            // Дополнительная логика обработки успешного принятия заявки здесь
+        } catch (error) {
+            console.error('Error accepting reason:', error);
+        }
+    }
+
+    async function handleRejectClick(reasonId) {
+        try {
+            const token = localStorage.getItem('token'); // Получаем JWT токен из локального хранилища
+            if (!token) {
+                throw new Error('JWT token not found');
+            }
+    
+            const response = await fetch(`http://13.50.16.98:1000/api/reason/reject/${reasonId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    // Дополнительные данные, если нужно
+                })
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to accept reason');
+            }
+    
+            const data = await response.json();
+            console.log('Successfully accepted item with ID:', reasonId);
+            console.log('Server response:', data);
+            // Дополнительная логика обработки успешного принятия заявки здесь
+        } catch (error) {
+            console.error('Error accepting reason:', error);
+        }
+    }
+
+    function openModal(itemId, action) {
+        const acceptModal = document.getElementById('acceptModal');
+        const rejectModal = document.getElementById('rejectModal');
+        const confirmAccept = document.getElementById('confirmAccept');
+        const cancelAccept = document.getElementById('cancelAccept');
+
+        if(action == 'Reject'){
+            console.log('Reject clicked.');
+            rejectModal.style.display = 'block';
+        }
+        if(action == 'Accept'){
+            console.log('Accept clicked.');
+            acceptModal.style.display = 'block';
+        }
+
+        // Close modal when close button is clicked
+        const span = document.getElementsByClassName("close")[0];
+        span.onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+    let com = 0
+
+    // Function to render the data in the HTML
+    function renderData(data) {
+        com++
+        if(com >1){
+            return
+        }
+        // Create a new div to contain the data
+        const newDataDiv = document.createElement('div5');
+        newDataDiv.classList.add('new-data-container'); // Add a class to style the div if needed
+        const div = document.getElementById('div3');
+        console.log(com)
+
+        data.forEach(item => {
+            const div2 = document.createElement('div');
+            div2.classList.add('div6');
+
+            // Style adjustments
+            div2.style.backgroundColor = 'var(--bg-color, #f8f9fa)';
+            div2.style.border = '1px solid #dee2e6';
+            div2.style.borderRadius = '10px';
+            div2.style.padding = '20px';
+            div2.style.marginBottom = '20px';
+            div2.style.marginLeft = '50px';
+            div2.style.position = 'relative';
+            div2.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+            div2.style.transition = 'all 0.3s ease';
+
+            // Status badge
+            const status = document.createElement('div');
+            status.textContent = item.status;
+            status.style.position = 'absolute';
+            status.style.top = '10px';
+            status.style.right = '10px';
+            status.style.backgroundColor = '#FF8C00';
+            status.style.color = '#212529';
+            status.style.padding = '5px 10px';
+            status.style.borderRadius = '50px';
+            status.style.fontWeight = 'bold';
+            div2.appendChild(status);
+
+            // HTML content with dynamic download link and buttons
+            div2.innerHTML += `
+            <p style="margin-bottom: 10px;"><strong>Student:</strong> <i class="fas fa-calendar-check"></i> ${item.fullName}</p>
+
+            <p style="margin-bottom: 10px;"><strong>Subject:</strong> <i class="fas fa-calendar-check"></i> ${item.section}</p>
+            <p style="margin-bottom: 10px;"><strong>Description:</strong> ${item.description}</p>
+            <p style="margin-bottom: 10px;"><strong>Document:</strong> <i class="fas fa-file-alt"></i> <a href="https://yesko-bucket-s3.s3.eu-north-1.amazonaws.com/${encodeURIComponent(item.document)}" download="${encodeURIComponent(item.document)}" style="text-decoration: none; color: #0056b3;">${item.document}</a></p>
+            <p style="margin-bottom: 10px;"><strong>Date From:</strong> <i class="fas fa-calendar-alt"></i> ${item.dateFrom}</p>
+            <p style="margin-bottom: 10px;"><strong>Date To:</strong> <i class="fas fa-calendar-check"></i> ${item.dateTo}</p>
+            <button 
+            style="margin-left: 400px;
+            padding: 10px 20px; 
+            border: none; 
+            color: white; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            outline: none; 
+            transition: all 0.3s ease; 
+            background: linear-gradient(to right, #4CAF50, #8BC34A); 
+            class="accept-button" 
+            onclick="openModal(${item.id}, 'Accept')">Accept</button>
+
+            <button
+            style="margin-left: 10px;
+            background: linear-gradient(to right, #FF6347, #FF6347); 
+
+            padding: 10px 20px; 
+            border: none; 
+            color: white; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            outline: none; 
+            transition: all 0.3s ease; 
+            class="reject-button"
+            onclick="openModal(${item.id}, 'Reject')">Reject</button>
+        `; 
+        
+
+            // Hover effects
+            div2.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)';
+                this.style.transform = 'scale(1.03)';
+            });
+
+            div2.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+                this.style.transform = 'scale(1)';
+            });
+
+            div.appendChild(div2);
+        });
+        document.body.appendChild(newDataDiv);
+    }
+
+
+    // Load and render data
+    document.addEventListener('DOMContentLoaded', async () => {
+        const data = await fetchDataWithToken();
+        renderData(data);
+    });
+
+    // Load and render data
+    document.addEventListener('DOMContentLoaded', async () => {
+        const data = await fetchDataWithToken();
+        renderData(data);
+
+    });    
+    </script>
+</body>
+</html>
