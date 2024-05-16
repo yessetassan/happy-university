@@ -35,6 +35,29 @@ body{
     width: 400px;
     align-items: center;
 }
+.error {
+    border-color: red;
+}
+.error_label{
+    display: none;
+    color: red; 
+    display: none; 
+    font-size: 13px; 
+    margin-left: 460px;
+    margin-top: -20px;
+    margin-bottom: -20px;
+    
+}
+.error_labell{
+    display: none;
+    color: red; 
+    display: none; 
+    font-size: 13px; 
+    margin-left: 460px;
+    margin-top: -70px;
+    margin-bottom: -20px;
+    
+}
 .admin-info p{
     color: white;
     flex-basis: 100%;
@@ -179,6 +202,7 @@ table, tr, td{
 }
 .btn{
     background: none;
+    border-radius: 10px;
     cursor: pointer;
     border: none;
     color: white;

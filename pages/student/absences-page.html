@@ -93,7 +93,8 @@
                                 FROM :
                                 <input type="date" name="from" id="from" class="from" required> <!-- Add class "from" here -->
                             </label>
-                            
+                            <div id="date-error" class="error_label">From Date cannot be later than To Date.</div>
+                            <div id="today-error" class="error_label" style="margin-left: 470px;">To date cannot be later than today.</div>
                             <label for="to" class="label">
                                 TO :
                                 <input type="date" name="to" id="to" class="to" required> <!-- Add class "to" here -->
@@ -112,7 +113,7 @@
                             </label>
                             
                             <div style=" width: 100%;text-align: center;">
-                                <button class="btn" style="background: #DFBC5F; color: black; font-weight: 600; width: 200px; ">SUBMIT</button>
+                                <button class="btn" id="submitBtn" style="background: #DFBC5F; color: black; font-weight: 600; width: 200px; ">SUBMIT</button>
                                 
                             </div>
                             <div id="submitModal" class="modal">
@@ -229,7 +230,7 @@
     <script>
        (async function () {
             try {
-                const response = await fetch('/api/api/person/v1/current', {
+                const response = await fetch('http://0.0.0.0:8081/api/person/v1/current', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
@@ -312,7 +313,7 @@
                     
 
                 try {
-                    const response = await fetch('/api/api/reason/upload', {
+                    const response = await fetch('http://0.0.0.0:8081/api/reason/upload', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -420,6 +421,47 @@
         }          
  
     </script>
+    <script>
+        document.getElementById('from').addEventListener('change', validateDates);
+        document.getElementById('to').addEventListener('change', validateDates);
+
+        function validateDates() {
+            var fromDate = new Date(document.getElementById('from').value);
+            var toDate = new Date(document.getElementById('to').value);
+            var today = new Date();
+            var dateError = document.getElementById('date-error');
+            var todayError = document.getElementById('today-error');
+
+            if (fromDate > toDate) {
+                document.getElementById('from').style.borderColor = 'red';
+                dateError.style.display = 'block';
+                document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").style.cursor = 'default';
+            } else {
+                document.getElementById('to').classList.remove('error');
+                dateError.style.display = 'none';
+            }
+
+            if (fromDate > today) {
+                document.getElementById('from').classList.add('error');
+                document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").style.cursor = 'default';
+            } else {
+                document.getElementById('from').classList.remove('error');
+            }
+
+            if (toDate > today) {
+                document.getElementById('to').style.borderColor = 'red';
+                todayError.style.display = 'block';
+                document.getElementById("submitBtn").disabled = true;
+                document.getElementById("submitBtn").style.cursor = 'default';
+            } else {
+                todayError.style.display = 'none';
+                document.getElementById('to').style.borderColor = 'white';
+                
+            }
+        } 
+    </script>
 
     <script>
         // Fetch data from the API endpoint with JWT token
@@ -430,7 +472,7 @@ async function fetchDataWithToken() {
             throw new Error('JWT token not found');
         }
 
-        const response = await fetch('/api/api/reason', {
+        const response = await fetch('http://0.0.0.0:8081/api/reason', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -570,7 +612,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Fetch data from the API endpoint
 async function fetchSections() {
     try {
-        const response = await fetch('/api/api/person/section', {
+        const response = await fetch('http://0.0.0.0:8081/api/person/section', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include authorization if needed
                 'Content-Type': 'application/json',
