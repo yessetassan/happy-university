@@ -230,7 +230,7 @@
     <script>
        (async function () {
             try {
-                const response = await fetch('/api/person/v1/current', {
+                const response = await fetch('/api/api/person/v1/current', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`, // Add authorization if needed
@@ -313,7 +313,7 @@
                     
 
                 try {
-                    const response = await fetch('/api/reason/upload', {
+                    const response = await fetch('/api/api/reason/upload', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -472,7 +472,7 @@ async function fetchDataWithToken() {
             throw new Error('JWT token not found');
         }
 
-        const response = await fetch('/api/reason', {
+        const response = await fetch('/api/api/reason', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Fetch data from the API endpoint
 async function fetchSections() {
     try {
-        const response = await fetch('/api/person/section', {
+        const response = await fetch('/api/api/person/section', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`, // Include authorization if needed
                 'Content-Type': 'application/json',
