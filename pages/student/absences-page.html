@@ -440,6 +440,7 @@
             } else {
                 document.getElementById('to').classList.remove('error');
                 dateError.style.display = 'none';
+                document.getElementById("submitBtn").disabled = false;
             }
 
             if (fromDate > today) {
@@ -448,6 +449,7 @@
                 document.getElementById("submitBtn").style.cursor = 'default';
             } else {
                 document.getElementById('from').classList.remove('error');
+                document.getElementById("submitBtn").disabled = false;
             }
 
             if (toDate > today) {
@@ -458,6 +460,7 @@
             } else {
                 todayError.style.display = 'none';
                 document.getElementById('to').style.borderColor = 'white';
+                document.getElementById("submitBtn").disabled = false;
                 
             }
         } 
